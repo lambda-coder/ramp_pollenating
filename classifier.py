@@ -36,12 +36,11 @@ hyper_parameters = dict(
     output_num_units=18, output_nonlinearity=nonlinearities.softmax,
     update_learning_rate=0.01,
     update_momentum=0.9,
-    max_epochs=15,
+    max_epochs=1,
 )
 
 
 class Classifier(BaseEstimator):
-
     def __init__(self):
         self.net = build_model(hyper_parameters)
 
@@ -50,7 +49,7 @@ class Classifier(BaseEstimator):
         X = X.astype(np.float32)
         X = X.transpose((0, 3, 1, 2))
         return X
-    
+
     def preprocess_y(self, y):
         return y.astype(np.int32)
 
