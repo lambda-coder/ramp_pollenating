@@ -69,8 +69,8 @@ class Classifier(BaseEstimator):
         X = (X / 255.)
         X = X.astype(np.float32)
         X = X[:, 10:54, 10:54, :]
-        #X = X.transpose((0, 3, 1, 2))
-        X = sample_from_rotation_x( X )        
+        X = X.transpose((0, 3, 1, 2))
+        #X = sample_from_rotation_x( X )        
         return X
 
     def preprocess_y(self, y):
@@ -103,6 +103,8 @@ def build_model(hyper_parameters):
             ('hidden4', layers.DenseLayer),
             ('hidden5', layers.DenseLayer),
             ('hidden6', layers.DenseLayer),
+            ('hidden7', layers.DenseLayer),
+            ('hidden8', layers.DenseLayer),
             ('output', layers.DenseLayer),
             ],
         input_shape=(None, 3, 44, 44),
@@ -122,9 +124,15 @@ hyper_parameters = dict(
     hidden5_num_units=512,
     hidden5_nonlinearity=nonlinearities.leaky_rectify,
     hidden5_W=init.GlorotUniform(gain='relu'),
-    hidden6_num_units=256,
+    hidden6_num_units=512,
     hidden6_nonlinearity=nonlinearities.very_leaky_rectify,
     hidden6_W=init.GlorotUniform(gain='relu'),
+    hidden7_num_units=256,
+    hidden7_nonlinearity=nonlinearities.leaky_rectify,
+    hidden7_W=init.GlorotUniform(gain='relu'),
+    hidden8_num_units=128,
+    hidden8_nonlinearity=nonlinearities.rectify,
+    hidden8_W=init.GlorotUniform(gain='relu'),
     output_num_units=18,
     output_nonlinearity=nonlinearities.softmax,
     update_learning_rate=0.01,
