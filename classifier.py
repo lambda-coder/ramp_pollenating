@@ -8,6 +8,7 @@ from lasagne import layers, nonlinearities, updates, init, objectives
 from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet, BatchIterator
 from nolearn.lasagne.handlers import EarlyStopping
+
  
  
 class FlipBatchIterator(BatchIterator):
@@ -75,8 +76,8 @@ def build_model(hyper_parameters):
     return net
  
 hyper_parameters = dict(
-    conv1_num_filters=64, conv1_filter_size=(3, 3), pool1_pool_size=(2, 2),
-    conv2_num_filters=256, conv2_filter_size=(2, 2), pool2_pool_size=(2, 2),
+    conv1_num_filters=128, conv1_filter_size=(2, 2), pool1_pool_size=(2, 2),
+    conv2_num_filters=256, conv2_filter_size=(1, 1), pool2_pool_size=(2, 2),
     conv3_num_filters=128, conv3_filter_size=(2, 2), pool3_pool_size=(4, 4),
     hidden4_num_units=1024,
     hidden4_nonlinearity=nonlinearities.rectify,
