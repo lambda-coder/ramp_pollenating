@@ -8,6 +8,30 @@ from lasagne import layers, nonlinearities, updates, init, objectives
 from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet, BatchIterator
 from nolearn.lasagne.handlers import EarlyStopping
+from itertools import repeat
+
+
+def sample_from_rotation_x( x ):
+    x_extends = []
+    x_extends_extend = x_extends.extend
+    rot90 = np.rot90
+    np_array = np.array
+    for i in range(x.shape[0]):
+        x_extends.extend([
+        np_array([x[i,:,:,0], x[i,:,:,1], x[i,:,:,2]]),
+        np_array([rot90(x[i,:,:,0]),rot90(x[i,:,:,1]), rot90(x[i,:,:,2])]),
+        np_array([rot90(x[i,:,:,0],2),rot90(x[i,:,:,1],2), rot90(x[i,:,:,2],2)]),
+        np_array([rot90(x[i,:,:,0],3),rot90(x[i,:,:,1],3), rot90(x[i,:,:,2],3)])
+        ])
+    return np_array(x_extends)
+ 
+def sample_from_rotation_y(y):
+    y_extends = []
+    y_extends_extend = y_extends.extend
+    for i in y:
+        y_extends_extend( repeat( i ,4) )
+    return np.array(y_extends)
+
 
  
  
@@ -37,20 +61,33 @@ class Classifier(BaseEstimator):
         X = (X / 255.)
         X = X.astype(np.float32)
         X = X[:, 10:54, 10:54, :]
-        X = X.transpose((0, 3, 1, 2))
+        #X = X.transpose((0, 3, 1, 2))
+        X = sample_from_rotation_x( X )        
         return X
+ 
+    def predict_preprocess(self, X):
+        X = (X / 255.)
+        X = X.astype(np.float32)
+        X = X[:, 10:54, 10:54, :]
+        #X = X.transpose((0, 3, 1, 2))
+        X = sample_from_rotation_x( X )        
+        return X
+
+    def preprocess_y(self, y):
+        y = sample_from_rotation_y(y)
+        return y.astype(np.int32)
  
     def fit(self, X, y):
         X = self.preprocess(X)
-        self.net.fit(X, y)
+        self.net.fit(X, self.preprocess_y(y))
         return self
  
     def predict(self, X):
-        X = self.preprocess(X)
+        X = self.predict_preprocess(X)
         return self.net.predict(X)
  
     def predict_proba(self, X):
-        X = self.preprocess(X)
+        X = self.predict_preprocess(X)
         return self.net.predict_proba(X)
  
 def build_model(hyper_parameters):
@@ -96,3 +133,5 @@ hyper_parameters = dict(
     on_epoch_finished=[EarlyStopping(patience=20, criterion='valid_accuracy', criterion_smaller_is_better=False)],
     batch_iterator_train=FlipBatchIterator(batch_size=100)
 )
+
+
