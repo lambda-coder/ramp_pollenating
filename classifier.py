@@ -100,6 +100,8 @@ def build_model(hyper_parameters):
             ('pool2', layers.MaxPool2DLayer),
             ('conv3', layers.Conv2DLayer),
             ('pool3', layers.MaxPool2DLayer),
+            ('conv4', layers.Conv2DLayer),
+            ('pool4', layers.MaxPool2DLayer),
             ('hidden4', layers.DenseLayer),
             ('hidden5', layers.DenseLayer),
             ('hidden6', layers.DenseLayer),
@@ -118,7 +120,8 @@ def build_model(hyper_parameters):
 hyper_parameters = dict(
     conv1_num_filters=128, conv1_filter_size=(2, 2), pool1_pool_size=(2, 2),
     conv2_num_filters=256, conv2_filter_size=(1, 1), pool2_pool_size=(2, 2),
-    conv3_num_filters=128, conv3_filter_size=(2, 2), pool3_pool_size=(4, 4),
+    conv3_num_filters=128, conv3_filter_size=(1, 1), pool3_pool_size=(2, 2),
+    conv4_num_filters=64 , conv4_filter_size=(2, 2), pool4_pool_size=(4, 4),
     hidden4_num_units=1024,
     hidden4_nonlinearity=nonlinearities.rectify,
     hidden4_W=init.GlorotUniform(gain='relu'),
